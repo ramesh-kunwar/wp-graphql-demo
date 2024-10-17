@@ -47,17 +47,24 @@ export async function getPostBySlug(slug) {
       query: gql`
         query PostBySlug($slug: ID!) {
           post(id: $slug, idType: SLUG) {
-            id
-            title
-            content
+            authorId
             date
-            slug
-            categories {
-              nodes {
-                name
-                slug
+            title
+            featuredImage {
+              node {
+                id
+                mediaItemUrl
               }
             }
+            author {
+              node {
+                name
+                avatar {
+                  url
+                }
+              }
+            }
+            content
           }
         }
       `,
