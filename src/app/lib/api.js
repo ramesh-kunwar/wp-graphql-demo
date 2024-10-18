@@ -78,6 +78,68 @@ export async function getPostBySlug(slug) {
   }
 }
 
+export async function getPopularPosts() {
+  try {
+    const { data } = await client.query({
+      query: gql`
+        query PopularPosts {
+          popularPosts {
+            title
+            date
+            author {
+              node {
+                name
+              }
+            }
+            featuredImage {
+              node {
+                mediaItemUrl
+              }
+            }
+            excerpt
+          }
+        }
+      `,
+    });
+
+    // Return the fetched popular posts data
+    return data.popularPosts;
+  } catch (error) {
+    console.error("Error fetching popular posts:", error);
+    return [];
+  }
+}
+// export async function getPopularPosts() {
+//   try {
+//     const { data } = await client.query({
+//       query: gql`
+//         query PopularPosts {
+//           popularPosts {
+//             title
+//             date
+//             author {
+//               node {
+//                 name
+//               }
+//             }
+//             featuredImage {
+//               node {
+//                 mediaItemUrl
+//               }
+//             }
+//             excerpt
+//           }
+//         }
+//       `,
+//     });
+
+//     return data.PopularPosts;
+//   } catch (error) {
+//     console.error("Error fetching posts:", error);
+//     return [];
+//   }
+// }
+
 export async function getAllCategories() {
   try {
     const { data } = await client.query({

@@ -1,32 +1,22 @@
 import Link from "next/link";
-import { getAllCategories, getAllPosts } from "../lib/api";
+import { getAllCategories, getAllPosts, getPopularPosts } from "../lib/api";
 // import { getAllPosts, getAllCategories } from "./lib/api";
 import Image from "next/image";
+import PopularPosts from "../components/PopularPosts";
 
 export const revalidate = 60; // revalidate this page every 60 seconds
 
 export default async function Posts() {
   const [posts, categories] = await Promise.all([
     getAllPosts(),
-    getAllCategories(),
+    // getAllCategories(),
+    // getPopularPosts(),
   ]);
+  const popularPosts = await getPopularPosts();
 
+  // console.log(posts, 'posts from posts page')
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-50">
-      {/* <h2 className="text-2xl font-semibold mb-4">Categories</h2> */}
-      {/* <ul className="mb-8 space-y-2">
-        {categories.map((category) => (
-          <li key={category.id}>
-            <Link
-              href={`/${category.slug}`}
-              className="text-blue-600 hover:underline"
-            >
-              {category.name}
-            </Link>
-          </li>
-        ))}
-      </ul> */}
-
       <h2 className="text-2xl font-semibold mb-4">Posts</h2>
       <ul className="space-y-4 grid grid-cols-4 gap-5">
         {posts.map((post) => (
@@ -50,6 +40,10 @@ export default async function Posts() {
           </li>
         ))}
       </ul>
+
+      <h2 className="text-6xl font-bold text-center my-8">Tredning Posts</h2>
+
+      <PopularPosts popularPosts={popularPosts} />
     </div>
   );
 }
