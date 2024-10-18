@@ -1,20 +1,24 @@
 import Link from "next/link";
 import { getAllCategories, getAllPosts, getPopularPosts } from "../lib/api";
-// import { getAllPosts, getAllCategories } from "./lib/api";
 import Image from "next/image";
 import PopularPosts from "../components/PopularPosts";
+import { formatContent } from "../utils/formatContent";
 
 export const revalidate = 60; // revalidate this page every 60 seconds
 
 export default async function Posts() {
-  const [posts, categories] = await Promise.all([
-    getAllPosts(),
-    // getAllCategories(),
-    // getPopularPosts(),
-  ]);
-  const popularPosts = await getPopularPosts();
+  const [posts, categories] = await Promise.all([getAllPosts()]);
+  console.log(posts);
+  // Make a copy of the array before sorting
+  // if there is no visit count then default visitCount to 0
+  const popularPosts = posts.length
+    ? posts
+    : [...posts]
+        .sort((a, b) => (b.visitCount || 0) - (a.visitCount || 0))
+        .slice(0, 6);
 
-  // console.log(posts, 'posts from posts page')
+  console.log(popularPosts, "sorted products");
+
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-50">
       <h2 className="text-2xl font-semibold mb-4">Posts</h2>
@@ -46,21 +50,4 @@ export default async function Posts() {
       <PopularPosts popularPosts={popularPosts} />
     </div>
   );
-}
-
-function formatContent(htmlContent) {
-  // Step 1: Remove <p> and </p> tags using regex
-  const cleanedContent = htmlContent.replace(/<\/?p>/g, "");
-
-  // Step 2: Split content into words
-  const words = cleanedContent.split(/\s+/);
-
-  // Step 3: Check if the content has more than 50 words
-  if (words.length > 20) {
-    // Step 4: Trim to 50 words and add '...'
-    return words.slice(0, 20).join(" ") + "...";
-  }
-
-  // If content is less than or equal to 50 words, return it as it is
-  return cleanedContent;
 }

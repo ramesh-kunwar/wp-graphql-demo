@@ -23,6 +23,7 @@ export async function getAllPosts() {
               modified
               id
               slug
+              visitCount
               featuredImage {
                 node {
                   mediaItemUrl
